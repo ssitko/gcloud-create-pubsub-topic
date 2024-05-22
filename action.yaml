@@ -8,6 +8,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - run: echo "FIRST >>> ${{ inputs.who-to-greet}} SECOND >>> $INPUT_WHO_TO_GREET THIRD >>> $INPUTS_WHO_TO_GREET"
       shell: bash
     - run: ls -al
