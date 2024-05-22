@@ -1,0 +1,12 @@
+name: "gcloud infrastructure scripts"
+description: "Greet someone and record the time"
+inputs:
+  who-to-greet:
+    description: "Who to greet"
+    required: true
+    default: "World"
+runs:
+  using: "composite"
+  steps:
+    - run: echo "FIRST >>> ${{ inputs.who-to-greet}} SECOND >>> $INPUT_WHO_TO_GREET THIRD >>> $INPUTS_WHO_TO_GREET"
+      shell: bash
