@@ -12,5 +12,7 @@ runs:
   steps:
     - run: |
         # Create pubsub topic for the project
-        gcloud pubsub topics create --project=${{ inputs.project-id }} --message-retention-duration=31d ${{ inputs.topic-name }}
+        OUT=$(gcloud pubsub topics create --project=${{ inputs.project-id }} --message-retention-duration=31d ${{ inputs.topic-name }} 2>&1 >/dev/null)
+
+        echo $OUT
       shell: bash
