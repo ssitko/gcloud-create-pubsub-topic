@@ -1,18 +1,18 @@
 name: "gcloud infrastructure scripts"
 description: "gcloud shell scripts for creating infrastructure scripts"
 inputs:
-  who-to-greet:
-    description: "Who to greet"
+  project-id:
+    description: "Project ID"
     required: true
-    default: "World"
+  topic-name:
+    description: "Topic name"
+    required: true
 runs:
   using: "composite"
   steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - run: echo "FIRST >>> ${{ inputs.who-to-greet}} SECOND >>> $INPUT_WHO_TO_GREET THIRD >>> $INPUTS_WHO_TO_GREET"
-      shell: bash
-    - run: ls -al
-      shell: bash
-    - run: cat pubsub.sh
+    - run: |
+        # Create pubsub topic for the project
+        OUT=$(gcloud pubsub topics create --project=${{ inputs.project-id }} --message-retention-duration=31d ${{ inputs.topic-name }} 2>&1 >/dev/null)
+
+        echo $OUT
       shell: bash
