@@ -12,5 +12,5 @@ runs:
       shell: bash
     - run: ls -al
       shell: bash
-    - run: cat ./pubsub.sh
+    - run: cat pubsub.sh
       shell: bash
