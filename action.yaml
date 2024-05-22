@@ -1,5 +1,5 @@
 name: "gcloud infrastructure scripts"
-description: "Greet someone and record the time"
+description: "gcloud shell scripts for creating infrastructure scripts"
 inputs:
   who-to-greet:
     description: "Who to greet"
@@ -9,4 +9,8 @@ runs:
   using: "composite"
   steps:
     - run: echo "FIRST >>> ${{ inputs.who-to-greet}} SECOND >>> $INPUT_WHO_TO_GREET THIRD >>> $INPUTS_WHO_TO_GREET"
+      shell: bash
+    - run: ls -al
+      shell: bash
+    - run: cat ./pubsub.sh
       shell: bash
