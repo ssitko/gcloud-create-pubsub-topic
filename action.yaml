@@ -1,4 +1,4 @@
-name: "gcloud pubsub create"
+name: "gcloud pubsub create topic"
 description: "gcloud shell scripts for creating pubsub component & subscription for given google cloud project"
 inputs:
   project-id:
