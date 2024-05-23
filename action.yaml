@@ -1,0 +1,58 @@
+name: "gcloud pubsub create"
+description: "gcloud shell scripts for creating pubsub component & subscription for given google cloud project"
+inputs:
+  project-id:
+    description: "Project ID"
+    required: true
+  topic-name:
+    description: "Topic name"
+    required: true
+  subscription-name:
+    description: "Subscription name"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        TOPIC_NAME=${{ inputs.topic-name }}
+        PROJECT_ID=${{ inputs.project-id }}
+        SUBSCRIPTION_NAME=${{ inputs.subscription-name }}
+
+        if [[ -z "${TOPIC_NAME}" ]]; then
+            echo ">>> (Infra) | Critical: required <topic-bame> parameter is not set! Aborting..."
+            exit 1
+        elif [[ -z "${PROJECT_ID}" ]]; then
+            echo ">>> (Infra) | Critical: <project-id> parameter is not set! Aborting..."
+            exit 1
+        elif [[ -z "${SUBSCRIPTION_NAME}" ]]; then
+            SUBSCRIPTION_NAME="$TOPIC_NAME-sub"
+            echo ">>> (Infra) | Warning: <subscription-name> paramater is not set! Defaulting it to <$TOPIC_NAME-sub> value..."
+        fi
+
+        RESULT=$(
+            gcloud pubsub topics list \
+                --filter="name.scope(topics)=${TOPIC_NAME}" \
+                --format="value(name)" 2>/dev/null
+        )
+
+        # Assert describe pubsub topic command result
+        if [ "${RESULT}" == "" ]; then
+            echo ">>> (Infra) | Topic ${TOPIC_NAME} does not exist, creating..."
+            gcloud pubsub topics create --project=${PROJECT_ID} --message-retention-duration=31d $TOPIC_NAME
+            if [ $? -eq 0 ]; then
+                echo ">>> (Infra) | Successfully created <$TOPIC_NAME> topic in the <$PROJECT_ID> project"
+                
+              # Create subscription for the topic
+              if gcloud pubsub subscriptions create "$SUBSCRIPTION_NAME" --topic $TOPIC_NAME; then
+                  echo ">>> (Infra) | Created <$SUBSCRIPTION_NAME> subscription for <$TOPIC_NAME> topic in the <$PROJECT_ID> project."
+              else
+                  echo ">>> (Infra) | <$SUBSCRIPTION_NAME> subscription already exists for the <$TOPIC_NAME> topic. Skipping..."
+              fi
+            else
+                echo ">>> (Infra) | Unable to create <$TOPIC_NAME> in the <$PROJECT_ID> project. Aborting..."
+                exit 1
+            fi
+        else
+            echo ">>> (Infra) | Topic <$TOPIC_NAME> already exists in the <$PROJECT_ID> project. Skipping..."
+        fi
+      shell: bash
