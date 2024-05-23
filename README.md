@@ -15,7 +15,7 @@ your-gh-manifest.yaml
   with:
     project-id: your-project-id
     topic-name: your-topic-name
-    subscription-name: optional-subscription-name // this is optional
+    subscription-name: optional-subscription-name // optional, it will deafult to <topic-name>-sub if not provided
 ```
 
 ### Szymon Sitko @ 2024
