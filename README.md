@@ -15,7 +15,8 @@ your-gh-manifest.yaml
   with:
     project-id: your-project-id
     topic-name: your-topic-name
-    subscription-name: optional-subscription-name // this is optional
+    subscription-name: optional-subscription-name // optional
+    initial-message: "{\"some\": \"message-to-start-with\"}" // optional
 ```
 
 ### Szymon Sitko @ 2024

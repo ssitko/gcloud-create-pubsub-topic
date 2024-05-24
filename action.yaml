@@ -10,6 +10,9 @@ inputs:
   subscription-name:
     description: "Subscription name"
     required: false
+  initial-message:
+    description: "Initial message that is sent to newly created topic"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -17,6 +20,7 @@ runs:
         TOPIC_NAME=${{ inputs.topic-name }}
         PROJECT_ID=${{ inputs.project-id }}
         SUBSCRIPTION_NAME=${{ inputs.subscription-name }}
+        INITIAL_MESSAGE=${{ inputs.initial-message }}
 
         if [[ -z "${TOPIC_NAME}" ]]; then
             echo ">>> (Infra) | Critical: required <topic-bame> parameter is not set! Aborting..."
@@ -45,6 +49,12 @@ runs:
               # Create subscription for the topic
               if gcloud pubsub subscriptions create "$SUBSCRIPTION_NAME" --topic $TOPIC_NAME; then
                   echo ">>> (Infra) | Created <$SUBSCRIPTION_NAME> subscription for <$TOPIC_NAME> topic in the <$PROJECT_ID> project."
+
+                  if [[ -n "${INITIAL_MESSAGE}" ]]; then
+                      echo ">>> (Infra) | Initial message is set - emitting message to the newly created topic..."
+                      
+                      gcloud pubsub topics publish $TOPIC_NAME --message="$INITIAL_MESSAGE"
+                  fi
               else
                   echo ">>> (Infra) | <$SUBSCRIPTION_NAME> subscription already exists for the <$TOPIC_NAME> topic. Skipping..."
               fi
